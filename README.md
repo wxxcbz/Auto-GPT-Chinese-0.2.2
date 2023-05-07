@@ -10,7 +10,11 @@
 这个项目是基于Auto-GPT原作者的0.3.0Stable版本，应大家要求，我快速制作了中文的汉化版本，基本运行顺利，还有些小瑕疵，会不断更新修改，欢迎大家关注，还请大家多支持！下面的内容就不过多翻译了，保持与原作者一致！
 如果大家希望支持我，还请给我点个小星星，谢谢！也可以通过微信与我们交流
 
-![微信](https://raw.githubusercontent.com/RealHossie/Auto-GPT-Chinese/master/docs/imgs/wechat.png)
+<p align="center">
+  <a href="https://raw.githubusercontent.com/RealHossie/Auto-GPT-Chinese/master/docs/imgs/wechat.png">
+    <img src="https://raw.githubusercontent.com/RealHossie/Auto-GPT-Chinese/master/docs/imgs/wechat.png" alt="微信">
+  </a>
+</p>
 
 </div>
 
