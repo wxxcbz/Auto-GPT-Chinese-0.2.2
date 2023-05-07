@@ -65,31 +65,30 @@ def run_auto_gpt(
         if motd:
             motd = markdown_to_ansi_style(motd)
             for motd_line in motd.split("\n"):
-                logger.info(motd_line, "NEWS:", Fore.GREEN)
+                logger.info(motd_line, "新闻:", Fore.GREEN)
             if is_new_motd and not cfg.chat_messages_enabled:
                 input(
                     Fore.MAGENTA
                     + Style.BRIGHT
-                    + "NEWS: Bulletin was updated! Press Enter to continue..."
+                    + "NEWS: 最新信息已经更新，按回车继续..."
                     + Style.RESET_ALL
                 )
 
         git_branch = get_current_git_branch()
         if git_branch and git_branch != "stable":
             logger.typewriter_log(
-                "WARNING: ",
+                "警告: ",
                 Fore.RED,
-                f"You are running on `{git_branch}` branch "
-                "- this is not a supported branch.",
+                f"你正在运行的是 `{git_branch}` 分支 "
+                "- 该分支不被支持.",
             )
         if sys.version_info < (3, 10):
             logger.typewriter_log(
-                "WARNING: ",
+                "警告: ",
                 Fore.RED,
-                "You are running on an older version of Python. "
-                "Some people have observed problems with certain "
-                "parts of Auto-GPT with this version. "
-                "Please consider upgrading to Python 3.10 or higher.",
+                "你正在运行较低版本的Python. "
+                "有些朋友在这个过程中会出现一系列问题"
+                "建议更新你的Python至3.10或更高.",
             )
 
     if install_plugin_deps:
@@ -135,13 +134,13 @@ def run_auto_gpt(
         "autogpt.commands.task_statuses",
     ]
     logger.debug(
-        f"The following command categories are disabled: {cfg.disabled_command_categories}"
+        f"下类命令将被禁止: {cfg.disabled_command_categories}"
     )
     command_categories = [
         x for x in command_categories if x not in cfg.disabled_command_categories
     ]
 
-    logger.debug(f"The following command categories are enabled: {command_categories}")
+    logger.debug(f"下类命令将被允许: {command_categories}")
 
     for command_category in command_categories:
         command_registry.import_commands(command_category)
@@ -165,12 +164,12 @@ def run_auto_gpt(
     # this is particularly important for indexing and referencing pinecone memory
     memory = get_memory(cfg, init=True)
     logger.typewriter_log(
-        "Using memory of type:", Fore.GREEN, f"{memory.__class__.__name__}"
+        "使用记忆类型:", Fore.GREEN, f"{memory.__class__.__name__}"
     )
-    logger.typewriter_log("Using Browser:", Fore.GREEN, cfg.selenium_web_browser)
+    logger.typewriter_log("使用浏览器:", Fore.GREEN, cfg.selenium_web_browser)
     system_prompt = ai_config.construct_full_prompt()
     if cfg.debug_mode:
-        logger.typewriter_log("Prompt:", Fore.GREEN, system_prompt)
+        logger.typewriter_log("命令:", Fore.GREEN, system_prompt)
 
     agent = Agent(
         ai_name=ai_name,

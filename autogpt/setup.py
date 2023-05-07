@@ -23,31 +23,35 @@ def prompt_user() -> AIConfig:
 
     # Construct the prompt
     logger.typewriter_log(
-        "Welcome to Auto-GPT! ",
+        "欢迎使用RealHossie的汉化版Auto-GPT!",
         Fore.GREEN,
-        "run with '--help' for more information.",
+    )
+    logger.typewriter_log(
+        "也欢迎关注我的频道www.youtube.com/@hossie",
+        Fore.LIGHTBLUE_EX,
+        "执行 '--help' 获取更多信息.",
         speak_text=True,
     )
 
     # Get user desire
     logger.typewriter_log(
-        "Create an AI-Assistant:",
+        "创建一个AI助手:",
         Fore.GREEN,
-        "input '--manual' to enter manual mode.",
+        "输入 '--manual' 进入手动模式.",
         speak_text=True,
     )
 
     user_desire = utils.clean_input(
-        f"{Fore.LIGHTBLUE_EX}I want Auto-GPT to{Style.RESET_ALL}: "
+        f"{Fore.LIGHTBLUE_EX}我希望Auto-GPT帮我{Style.RESET_ALL}: "
     )
 
     if user_desire == "":
-        user_desire = "Write a wikipedia style article about the project: https://github.com/significant-gravitas/Auto-GPT"  # Default prompt
+        user_desire = "写一篇wikipedia风格的文章，关于此项目: https://github.com/RealHossie/Auto-GPT-Chinese"  # Default prompt
 
     # If user desire contains "--manual"
     if "--manual" in user_desire:
         logger.typewriter_log(
-            "Manual Mode Selected",
+            "手动模式已启动",
             Fore.GREEN,
             speak_text=True,
         )
@@ -58,9 +62,9 @@ def prompt_user() -> AIConfig:
             return generate_aiconfig_automatic(user_desire)
         except Exception as e:
             logger.typewriter_log(
-                "Unable to automatically generate AI Config based on user desire.",
+                "无法基于用户偏好生成AI配置.",
                 Fore.RED,
-                "Falling back to manual mode.",
+                "回滚至手动模式.",
                 speak_text=True,
             )
 
@@ -81,67 +85,63 @@ def generate_aiconfig_manual() -> AIConfig:
 
     # Manual Setup Intro
     logger.typewriter_log(
-        "Create an AI-Assistant:",
+        "建立一个AI助手:",
         Fore.GREEN,
-        "Enter the name of your AI and its role below. Entering nothing will load"
-        " defaults.",
+        "给你AI助手起一个名字和赋予它一个角色，什么都不输入将使用默认值.",
         speak_text=True,
     )
 
     # Get AI Name from User
     logger.typewriter_log(
-        "Name your AI: ", Fore.GREEN, "For example, 'Entrepreneur-GPT'"
+        "你AI的名字叫: ", Fore.GREEN, "例如, '企业家-GPT'"
     )
-    ai_name = utils.clean_input("AI Name: ")
+    ai_name = utils.clean_input("AI 名字: ")
     if ai_name == "":
-        ai_name = "Entrepreneur-GPT"
+        ai_name = "企业家-GPT"
 
     logger.typewriter_log(
-        f"{ai_name} here!", Fore.LIGHTBLUE_EX, "I am at your service.", speak_text=True
+        f"{ai_name} 在这儿呢!", Fore.LIGHTBLUE_EX, "我听从您的吩咐.", speak_text=True
     )
 
     # Get AI Role from User
     logger.typewriter_log(
-        "Describe your AI's role: ",
+        "描述你AI的角色: ",
         Fore.GREEN,
-        "For example, 'an AI designed to autonomously develop and run businesses with"
-        " the sole goal of increasing your net worth.'",
+        "例如, '一个自动帮助你策划与经营业务的人工智能帮手，目标专注于提升你的净资产.'",
     )
     ai_role = utils.clean_input(f"{ai_name} is: ")
     if ai_role == "":
-        ai_role = "an AI designed to autonomously develop and run businesses with the"
-        " sole goal of increasing your net worth."
+        ai_role = "一个自动帮助你策划与经营业务的人工智能帮手，目标专注于提升你的净资产."
 
     # Enter up to 5 goals for the AI
     logger.typewriter_log(
-        "Enter up to 5 goals for your AI: ",
+        "为你的AI定义最多5个目标: ",
         Fore.GREEN,
-        "For example: \nIncrease net worth, Grow Twitter Account, Develop and manage"
-        " multiple businesses autonomously'",
+        "例如: \n提升净资产, 增长Twitter账户, 自动化策划与管理多条业务线'",
     )
-    logger.info("Enter nothing to load defaults, enter nothing when finished.")
+    logger.info("什么都不输入将加载默认值，输入结束后直接按回车.")
     ai_goals = []
     for i in range(5):
-        ai_goal = utils.clean_input(f"{Fore.LIGHTBLUE_EX}Goal{Style.RESET_ALL} {i+1}: ")
+        ai_goal = utils.clean_input(f"{Fore.LIGHTBLUE_EX}目标{Style.RESET_ALL} {i+1}: ")
         if ai_goal == "":
             break
         ai_goals.append(ai_goal)
     if not ai_goals:
         ai_goals = [
-            "Increase net worth",
-            "Grow Twitter Account",
-            "Develop and manage multiple businesses autonomously",
+            "提升净资产",
+            "增长Twitter账户",
+            "自动化策划与管理多条业务线",
         ]
 
     # Get API Budget from User
     logger.typewriter_log(
-        "Enter your budget for API calls: ",
+        "输入你的API预算: ",
         Fore.GREEN,
-        "For example: $1.50",
+        "例如: $1.50",
     )
-    logger.info("Enter nothing to let the AI run without monetary limit")
+    logger.info("什么都不输入将让你的AI驰骋飞翔")
     api_budget_input = utils.clean_input(
-        f"{Fore.LIGHTBLUE_EX}Budget{Style.RESET_ALL}: $"
+        f"{Fore.LIGHTBLUE_EX}预算{Style.RESET_ALL}: $"
     )
     if api_budget_input == "":
         api_budget = 0.0
@@ -150,7 +150,7 @@ def generate_aiconfig_manual() -> AIConfig:
             api_budget = float(api_budget_input.replace("$", ""))
         except ValueError:
             logger.typewriter_log(
-                "Invalid budget input. Setting budget to unlimited.", Fore.RED
+                "错误的预算输入. 开启吃撑飞翔模式.", Fore.RED
             )
             api_budget = 0.0
 
@@ -165,24 +165,24 @@ def generate_aiconfig_automatic(user_prompt) -> AIConfig:
     """
 
     system_prompt = """
-Your task is to devise up to 5 highly effective goals and an appropriate role-based name (_GPT) for an autonomous agent, ensuring that the goals are optimally aligned with the successful completion of its assigned task.
+你的任务是作为一个自动化的助手，设计5个最高效的目标和一个最合适你角色名字(_GPT), 确保这些目标与所分配的任务达到最佳的一致性并成功完成.
 
-The user will provide the task, you will provide only the output in the exact format specified below with no explanation or conversation.
+用户会提出任务，你只需按照下面的格式提供输出，无需解释或对话.
 
-Example input:
-Help me with marketing my business
+输入示例:
+在业务营销方面帮助我
 
-Example output:
-Name: CMOGPT
-Description: a professional digital marketer AI that assists Solopreneurs in growing their businesses by providing world-class expertise in solving marketing problems for SaaS, content products, agencies, and more.
-Goals:
-- Engage in effective problem-solving, prioritization, planning, and supporting execution to address your marketing needs as your virtual Chief Marketing Officer.
+输出示例:
+名字: CMOGPT
+描述: 一名专业的数字营销人工智能助手，为独立创业者提供世界级的专业知识，解决软件即服务（SaaS）、内容产品、代理商等领域的营销问题，助力企业发展.
+目标:
+- 我作为您的虚拟首席营销官，我将积极参与有效的问题解决、优先事项排序、规划和支持执行，以满足您的营销需求.
 
-- Provide specific, actionable, and concise advice to help you make informed decisions without the use of platitudes or overly wordy explanations.
+- 我将提供具体、可操作且简洁的建议，帮助您在不使用陈词滥调或过多解释的情况下做出明智的决策.
 
-- Identify and prioritize quick wins and cost-effective campaigns that maximize results with minimal time and budget investment.
+- 我将识别并优先选择快速获胜和高性价比的营销活动，以最少的时间和预算投入实现最大化的结果.
 
-- Proactively take the lead in guiding you and offering suggestions when faced with unclear information or uncertainty to ensure your marketing strategy remains on track.
+- 我在面对不明确的信息或不确定性时，主动引导您并提供建议，确保您的营销策略保持正确的方向.
 """
 
     # Call LLM with the string as user input
@@ -193,19 +193,19 @@ Goals:
         },
         {
             "role": "user",
-            "content": f"Task: '{user_prompt}'\nRespond only with the output in the exact format specified in the system prompt, with no explanation or conversation.\n",
+            "content": f"任务: '{user_prompt}'\n仅以系统提示中指定的格式回应，不需要进行解释或对话.\n",
         },
     ]
     output = create_chat_completion(messages, CFG.fast_llm_model)
 
     # Debug LLM Output
-    logger.debug(f"AI Config Generator Raw Output: {output}")
+    logger.debug(f"AI配置生成原始输出: {output}")
 
     # Parse the output
-    ai_name = re.search(r"Name(?:\s*):(?:\s*)(.*)", output, re.IGNORECASE).group(1)
+    ai_name = re.search(r"名字(?:\s*):(?:\s*)(.*)", output, re.IGNORECASE).group(1)
     ai_role = (
         re.search(
-            r"Description(?:\s*):(?:\s*)(.*?)(?:(?:\n)|Goals)",
+            r"描述(?:\s*):(?:\s*)(.*?)(?:(?:\n)|目标)",
             output,
             re.IGNORECASE | re.DOTALL,
         )

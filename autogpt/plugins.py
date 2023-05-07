@@ -34,10 +34,10 @@ def inspect_zip_for_modules(zip_path: str, debug: bool = False) -> list[str]:
     with zipfile.ZipFile(zip_path, "r") as zfile:
         for name in zfile.namelist():
             if name.endswith("__init__.py") and not name.startswith("__MACOSX"):
-                logger.debug(f"Found module '{name}' in the zipfile at: {name}")
+                logger.debug(f"发现模块 '{name}' 的zip文件: {name}")
                 result.append(name)
     if len(result) == 0:
-        logger.debug(f"Module '__init__.py' not found in the zipfile @ {zip_path}.")
+        logger.debug(f"模块 '__init__.py' 没有在zip文件中找到 @ {zip_path}.")
     return result
 
 
@@ -72,12 +72,12 @@ def fetch_openai_plugins_manifest_and_spec(cfg: Config) -> dict:
                     manifest = response.json()
                     if manifest["schema_version"] != "v1":
                         logger.warn(
-                            f"Unsupported manifest version: {manifest['schem_version']} for {url}"
+                            f"不支持的版本: {manifest['schem_version']} for {url}"
                         )
                         continue
                     if manifest["api"]["type"] != "openapi":
                         logger.warn(
-                            f"Unsupported API type: {manifest['api']['type']} for {url}"
+                            f"不支持的API: {manifest['api']['type']} for {url}"
                         )
                         continue
                     write_dict_to_json_file(
@@ -85,12 +85,12 @@ def fetch_openai_plugins_manifest_and_spec(cfg: Config) -> dict:
                     )
                 else:
                     logger.warn(
-                        f"Failed to fetch manifest for {url}: {response.status_code}"
+                        f"获取清单失败 {url}: {response.status_code}"
                     )
             except requests.exceptions.RequestException as e:
-                logger.warn(f"Error while requesting manifest from {url}: {e}")
+                logger.warn(f"获取清单错误 {url}: {e}")
         else:
-            logger.info(f"Manifest for {url} already exists")
+            logger.info(f"清单 {url} 已经存在")
             manifest = json.load(open(f"{openai_plugin_client_dir}/ai-plugin.json"))
         if not os.path.exists(f"{openai_plugin_client_dir}/openapi.json"):
             openapi_spec = openapi_python_client._get_document(
@@ -100,7 +100,7 @@ def fetch_openai_plugins_manifest_and_spec(cfg: Config) -> dict:
                 openapi_spec, f"{openai_plugin_client_dir}/openapi.json"
             )
         else:
-            logger.info(f"OpenAPI spec for {url} already exists")
+            logger.info(f"OpenAPI 配置 {url} 已经存在")
             openapi_spec = json.load(open(f"{openai_plugin_client_dir}/openapi.json"))
         manifests[url] = {"manifest": manifest, "openapi_spec": openapi_spec}
     return manifests
@@ -117,13 +117,13 @@ def create_directory_if_not_exists(directory_path: str) -> bool:
     if not os.path.exists(directory_path):
         try:
             os.makedirs(directory_path)
-            logger.debug(f"Created directory: {directory_path}")
+            logger.debug(f"生成目录: {directory_path}")
             return True
         except OSError as e:
-            logger.warn(f"Error creating directory {directory_path}: {e}")
+            logger.warn(f"生成目录错误 {directory_path}: {e}")
             return False
     else:
-        logger.info(f"Directory {directory_path} already exists")
+        logger.info(f"目录 {directory_path} 已经存在")
         return True
 
 
@@ -162,7 +162,7 @@ def initialize_openai_plugins(
                 )
                 if client_results:
                     logger.warn(
-                        f"Error creating OpenAPI client: {client_results[0].header} \n"
+                        f"建立OpenAPI客户端错误: {client_results[0].header} \n"
                         f" details: {client_results[0].detail}"
                     )
                     continue
@@ -210,8 +210,8 @@ def scan_plugins(cfg: Config, debug: bool = False) -> List[AutoGPTPluginTemplate
     # Generic plugins
     plugins_path_path = Path(cfg.plugins_dir)
 
-    logger.debug(f"Allowlisted Plugins: {cfg.plugins_allowlist}")
-    logger.debug(f"Denylisted Plugins: {cfg.plugins_denylist}")
+    logger.debug(f"Plugins允许清单: {cfg.plugins_allowlist}")
+    logger.debug(f"Plugins禁止清单: {cfg.plugins_denylist}")
 
     for plugin in plugins_path_path.glob("*.zip"):
         if moduleList := inspect_zip_for_modules(str(plugin), debug):
@@ -245,7 +245,7 @@ def scan_plugins(cfg: Config, debug: bool = False) -> List[AutoGPTPluginTemplate
                     loaded_plugins.append(plugin)
 
     if loaded_plugins:
-        logger.info(f"\nPlugins found: {len(loaded_plugins)}\n" "--------------------")
+        logger.info(f"\nPlugins 找到: {len(loaded_plugins)}\n" "--------------------")
     for plugin in loaded_plugins:
         logger.info(f"{plugin._name}: {plugin._version} - {plugin._description}")
     return loaded_plugins
@@ -261,15 +261,15 @@ def denylist_allowlist_check(plugin_name: str, cfg: Config) -> bool:
     Returns:
         True or False
     """
-    logger.debug(f"Checking if plugin {plugin_name} should be loaded")
+    logger.debug(f"检查plugin {plugin_name} 是否可以加载")
     if plugin_name in cfg.plugins_denylist:
-        logger.debug(f"Not loading plugin {plugin_name} as it was in the denylist.")
+        logger.debug(f"没有加载plugin {plugin_name} 在禁止清单上.")
         return False
     if plugin_name in cfg.plugins_allowlist:
-        logger.debug(f"Loading plugin {plugin_name} as it was in the allowlist.")
+        logger.debug(f"成功加载plugin {plugin_name} 在允许清单上.")
         return True
     ack = input(
-        f"WARNING: Plugin {plugin_name} found. But not in the"
-        f" allowlist... Load? ({cfg.authorise_key}/{cfg.exit_key}): "
+        f"警告: Plugin {plugin_name} 已找到. 但是不在"
+        f" 允许清单中... 加载? ({cfg.authorise_key}/{cfg.exit_key}): "
     )
     return ack.lower() == cfg.authorise_key

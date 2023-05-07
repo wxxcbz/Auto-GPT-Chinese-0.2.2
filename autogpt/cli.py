@@ -3,49 +3,49 @@ import click
 
 
 @click.group(invoke_without_command=True)
-@click.option("-c", "--continuous", is_flag=True, help="Enable Continuous Mode")
+@click.option("-c", "--continuous", is_flag=True, help="启动持续模式")
 @click.option(
     "--skip-reprompt",
     "-y",
     is_flag=True,
-    help="Skips the re-prompting messages at the beginning of the script",
+    help="跳过重新输入命令环节",
 )
 @click.option(
     "--ai-settings",
     "-C",
-    help="Specifies which ai_settings.yaml file to use, will also automatically skip the re-prompt.",
+    help="指定使用哪个ai_settings.yaml文件, 同时自动跳过重新输入命令.",
 )
 @click.option(
     "-l",
     "--continuous-limit",
     type=int,
-    help="Defines the number of times to run in continuous mode",
+    help="定义持续模式中的持续次数",
 )
-@click.option("--speak", is_flag=True, help="Enable Speak Mode")
-@click.option("--debug", is_flag=True, help="Enable Debug Mode")
-@click.option("--gpt3only", is_flag=True, help="Enable GPT3.5 Only Mode")
-@click.option("--gpt4only", is_flag=True, help="Enable GPT4 Only Mode")
+@click.option("--speak", is_flag=True, help="开启语音模式")
+@click.option("--debug", is_flag=True, help="开启Debug模式")
+@click.option("--gpt3only", is_flag=True, help="开启GPT3.5模式")
+@click.option("--gpt4only", is_flag=True, help="开启GPT4模式")
 @click.option(
     "--use-memory",
     "-m",
     "memory_type",
     type=str,
-    help="Defines which Memory backend to use",
+    help="定义使用那种记忆后台",
 )
 @click.option(
     "-b",
     "--browser-name",
-    help="Specifies which web-browser to use when using selenium to scrape the web.",
+    help="指定使用哪个 Web 浏览器来使用 Selenium 抓取网络内容.",
 )
 @click.option(
     "--allow-downloads",
     is_flag=True,
-    help="Dangerous: Allows Auto-GPT to download files natively.",
+    help="危险: 允许Auto-GPT自动下载文件.",
 )
 @click.option(
     "--skip-news",
     is_flag=True,
-    help="Specifies whether to suppress the output of latest news on startup.",
+    help="指定是否在启动时不输出最新新闻.",
 )
 @click.option(
     # TODO: this is a hidden option for now, necessary for integration testing.
@@ -58,7 +58,7 @@ import click
 @click.option(
     "--install-plugin-deps",
     is_flag=True,
-    help="Installs external dependencies for 3rd party plugins.",
+    help="为第三方插件安装外部依赖库.",
 )
 @click.pass_context
 def main(

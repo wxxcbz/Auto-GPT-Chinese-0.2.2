@@ -8,7 +8,7 @@ function find_python_command() {
     then
         echo "python3"
     else
-        echo "Python not found. Please install Python."
+        echo "Python没有找到，请安装Python."
         exit 1
     fi
 }
@@ -22,4 +22,4 @@ then
     $PYTHON_CMD -m pip install -r requirements.txt
 fi
 $PYTHON_CMD -m autogpt $@
-read -p "Press any key to continue..."
+read -p "按任意键继续..."

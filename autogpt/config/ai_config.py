@@ -160,7 +160,7 @@ class AIConfig:
         for i, goal in enumerate(self.ai_goals):
             full_prompt += f"{i+1}. {goal}\n"
         if self.api_budget > 0.0:
-            full_prompt += f"\nIt takes money to let you run. Your API budget is ${self.api_budget:.3f}"
+            full_prompt += f"\n你是需要费用的，的预算是 ${self.api_budget:.3f}"
         self.prompt_generator = prompt_generator
         full_prompt += f"\n\n{prompt_generator.generate_prompt_string()}"
         return full_prompt

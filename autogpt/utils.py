@@ -49,12 +49,12 @@ def clean_input(prompt: str = "", talk=False):
                 return plugin_response
 
         # ask for input, default when just pressing Enter is y
-        logger.info("Asking user via keyboard...")
+        logger.info("等待用户输入中...")
         answer = input(prompt)
         return answer
     except KeyboardInterrupt:
-        logger.info("You interrupted Auto-GPT")
-        logger.info("Quitting...")
+        logger.info("你打断了Auto-GPT")
+        logger.info("我撤了啊...")
         exit(0)
 
 
@@ -67,10 +67,10 @@ def validate_yaml_file(file: str):
     except yaml.YAMLError as e:
         return (
             False,
-            f"There was an issue while trying to read with your AI Settings file: {e}",
+            f"尝试读取你AI配置文件过程中出现了问题: {e}",
         )
 
-    return (True, f"Successfully validated {Fore.CYAN}`{file}`{Fore.RESET}!")
+    return (True, f"成功验证 {Fore.CYAN}`{file}`{Fore.RESET}!")
 
 
 def readable_file_size(size, decimal_places=2):
@@ -118,12 +118,12 @@ def get_latest_bulletin() -> tuple[str, bool]:
     new_bulletin = get_bulletin_from_web()
     is_new_news = new_bulletin != "" and new_bulletin != current_bulletin
 
-    news_header = Fore.YELLOW + "Welcome to Auto-GPT!\n"
+    news_header = Fore.YELLOW + "欢迎来到RealHossie的汉化版Auto-GPT!\n"
     if new_bulletin or current_bulletin:
         news_header += (
-            "Below you'll find the latest Auto-GPT News and updates regarding features!\n"
-            "If you don't wish to see this message, you "
-            "can run Auto-GPT with the *--skip-news* flag.\n"
+            "下面会介绍最新的Auto-GPT信息与更新内容!\n"
+            "如果你不想每次打开看到这些信息, "
+            "你可以再执行Auto-GPT添加 *--skip-news* 后缀.\n"
         )
 
     if new_bulletin and is_new_news:

@@ -49,17 +49,17 @@ def get_command(response_json: Dict):
     """
     try:
         if "command" not in response_json:
-            return "Error:", "Missing 'command' object in JSON"
+            return "错误:", "缺少 'command' object in JSON"
 
         if not isinstance(response_json, dict):
-            return "Error:", f"'response_json' object is not dictionary {response_json}"
+            return "错误:", f"'response_json' object is not dictionary {response_json}"
 
         command = response_json["command"]
         if not isinstance(command, dict):
-            return "Error:", "'command' object is not a dictionary"
+            return "错误:", "'command' object is not a dictionary"
 
         if "name" not in command:
-            return "Error:", "Missing 'name' field in 'command' object"
+            return "错误:", "缺少 'name' field in 'command' object"
 
         command_name = command["name"]
 
@@ -68,10 +68,10 @@ def get_command(response_json: Dict):
 
         return command_name, arguments
     except json.decoder.JSONDecodeError:
-        return "Error:", "Invalid JSON"
+        return "错误:", "无效的JSON"
     # All other errors, return "Error: + error message"
     except Exception as e:
-        return "Error:", str(e)
+        return "错误:", str(e)
 
 
 def map_command_synonyms(command_name: str):
@@ -133,7 +133,7 @@ def execute_command(
                 " format."
             )
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"错误: {str(e)}"
 
 
 @command(
@@ -152,7 +152,7 @@ def get_text_summary(url: str, question: str) -> str:
     """
     text = scrape_text(url)
     summary = summarize_text(url, text, question)
-    return f""" "Result" : {summary}"""
+    return f""" "结果" : {summary}"""
 
 
 @command("get_hyperlinks", "Get text summary", '"url": "<url>"')
@@ -171,7 +171,7 @@ def get_hyperlinks(url: str) -> Union[str, List[str]]:
 
 @command(
     "start_agent",
-    "Start GPT Agent",
+    "启动GPT助手",
     '"name": "<name>", "task": "<short_task_desc>", "prompt": "<prompt>"',
 )
 def start_agent(name: str, task: str, prompt: str, model=CFG.fast_llm_model) -> str:
@@ -189,8 +189,8 @@ def start_agent(name: str, task: str, prompt: str, model=CFG.fast_llm_model) -> 
     # Remove underscores from name
     voice_name = name.replace("_", " ")
 
-    first_message = f"""You are {name}.  Respond with: "Acknowledged"."""
-    agent_intro = f"{voice_name} here, Reporting for duty!"
+    first_message = f"""你是 {name}.  回答 with: "收到"."""
+    agent_intro = f"{voice_name} 在这儿呢, 听从领导指挥!"
 
     # Create agent
     if CFG.speak_mode:
@@ -198,12 +198,12 @@ def start_agent(name: str, task: str, prompt: str, model=CFG.fast_llm_model) -> 
     key, ack = AGENT_MANAGER.create_agent(task, first_message, model)
 
     if CFG.speak_mode:
-        say_text(f"Hello {voice_name}. Your task is as follows. {task}.")
+        say_text(f"你好 {voice_name}. 你的任务如下. {task}.")
 
     # Assign task (prompt), get response
     agent_response = AGENT_MANAGER.message_agent(key, prompt)
 
-    return f"Agent {name} created with key {key}. First response: {agent_response}"
+    return f"助手 {name} 生成key {key}. 首次反馈: {agent_response}"
 
 
 @command("message_agent", "Message GPT Agent", '"key": "<key>", "message": "<message>"')
@@ -213,7 +213,7 @@ def message_agent(key: str, message: str) -> str:
     if is_valid_int(key):
         agent_response = AGENT_MANAGER.message_agent(int(key), message)
     else:
-        return "Invalid key, must be an integer."
+        return "无效的key, 必须为数字."
 
     # Speak response
     if CFG.speak_mode:

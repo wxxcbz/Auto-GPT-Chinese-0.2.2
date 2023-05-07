@@ -1,24 +1,22 @@
-# Website and Documentation Site 📰📖
-Check out *https://agpt.co*, the official news & updates site for Auto-GPT!
-The documentation also has a place here, at *https://docs.agpt.co*
+# 持续更新中
+Auto-GPT 0.3.0最大更新为自动定义AI名称，角色，任务等，也可以进入手动模式
+对插件（Plugin）的支持也在逐渐强大，可玩性更强
+我正在逐步修改汉化0.3.0稳定版本，如果你喜欢我的工作，请给我一个star，谢谢！关注我的频道www.youtube.com/@hossie
 
-# 🚀 v0.3.0 Release 🚀
-Over a week and 275 pull requests have passed since v0.2.2, and we are happy to announce
-the release of v0.3.0! *From now on, we will be focusing on major improvements* rather
-than bugfixes, as we feel stability has reached a reasonable level. Most remaining
-issues relate to limitations in prompt generation and the memory system, which will be
-the focus of our efforts for the next release.
 
-Highlights and notable changes in this release:
+# 官方网站与文档站 📰📖
+使用说明与最新信息 *https://agpt.co*
+相关文档 *https://docs.agpt.co*
 
-## Plugin support 🔌
-Auto-GPT now has support for plugins! With plugins, you can extend Auto-GPT's abilities,
-adding support for third-party services and more.
-See https://github.com/Significant-Gravitas/Auto-GPT-Plugins for instructions and available plugins.
+# 🚀 最新更新 🚀
+1. 基础命令汉化
+2. 将一些Prompt转化为中文更好理解内容
+3. 已完成部分插件汉化
 
-## Changes to Docker configuration 🐋
-The workdir has been changed from */home/appuser* to */app*.
-Be sure to update any volume mounts accordingly!
+# 🚀 未来更新 🚀
+1. 简单的插件汉化
+2. 优化已有汉化内容
+3. 跟踪官方更新
 
-# ⚠️ Command `send_tweet` is DEPRECATED, and will be removed in v0.4.0 ⚠️
-Twitter functionality (and more) is now covered by plugins, see [Plugin support 🔌]
+# ⚠️  `send_tweet` 已经被废弃, 0.4.0版本中将彻底删除 ⚠️
+Twitter 功能将通过Plugin完成 [Plugin support 🔌]

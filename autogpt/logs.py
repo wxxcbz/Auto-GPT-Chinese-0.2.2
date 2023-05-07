@@ -151,13 +151,13 @@ class Logger(metaclass=Singleton):
     def double_check(self, additionalText=None):
         if not additionalText:
             additionalText = (
-                "Please ensure you've setup and configured everything"
-                " correctly. Read https://github.com/Torantulino/Auto-GPT#readme to "
-                "double check. You can also create a github issue or join the discord"
-                " and ask there!"
+                "请确认你已经正确配置好所有内容"
+                " 请阅读 https://github.com/Torantulino/Auto-GPT#readme "
+                "确认. 你也可以在Github上开启Issue或者去Discord讨论"
+                "!"
             )
 
-        self.typewriter_log("DOUBLE CHECK CONFIGURATION", Fore.YELLOW, additionalText)
+        self.typewriter_log("请再次检查配置", Fore.YELLOW, additionalText)
 
     def log_json(self, data: Any, file_name: str) -> None:
         # Define log directory
@@ -269,11 +269,11 @@ def print_assistant_thoughts(
         assistant_thoughts_criticism = assistant_thoughts.get("criticism")
         assistant_thoughts_speak = assistant_thoughts.get("speak")
     logger.typewriter_log(
-        f"{ai_name.upper()} THOUGHTS:", Fore.YELLOW, f"{assistant_thoughts_text}"
+        f"{ai_name.upper()}思考:", Fore.YELLOW, f"{assistant_thoughts_text}"
     )
-    logger.typewriter_log("REASONING:", Fore.YELLOW, f"{assistant_thoughts_reasoning}")
+    logger.typewriter_log("推理:", Fore.YELLOW, f"{assistant_thoughts_reasoning}")
     if assistant_thoughts_plan:
-        logger.typewriter_log("PLAN:", Fore.YELLOW, "")
+        logger.typewriter_log("计划:", Fore.YELLOW, "")
         # If it's a list, join it into a string
         if isinstance(assistant_thoughts_plan, list):
             assistant_thoughts_plan = "\n".join(assistant_thoughts_plan)
@@ -285,7 +285,7 @@ def print_assistant_thoughts(
         for line in lines:
             line = line.lstrip("- ")
             logger.typewriter_log("- ", Fore.GREEN, line.strip())
-    logger.typewriter_log("CRITICISM:", Fore.YELLOW, f"{assistant_thoughts_criticism}")
+    logger.typewriter_log("批判:", Fore.YELLOW, f"{assistant_thoughts_criticism}")
     # Speak the assistant's thoughts
     if speak_mode and assistant_thoughts_speak:
         say_text(assistant_thoughts_speak)

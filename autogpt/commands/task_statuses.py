@@ -22,5 +22,5 @@ def task_complete(reason: str) -> NoReturn:
         A result string from create chat completion. A list of suggestions to
             improve the code.
     """
-    logger.info(title="Shutting down...\n", message=reason)
+    logger.info(title="关闭中...\n", message=reason)
     quit()

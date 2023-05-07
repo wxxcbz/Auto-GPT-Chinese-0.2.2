@@ -156,10 +156,10 @@ def read_file(filename: str) -> str:
     try:
         charset_match = charset_normalizer.from_path(filename).best()
         encoding = charset_match.encoding
-        logger.debug(f"Read file '{filename}' with encoding '{encoding}'")
+        logger.debug(f"读取文件 '{filename}' with encoding '{encoding}'")
         return str(charset_match)
     except Exception as err:
-        return f"Error: {err}"
+        return f"错误: {err}"
 
 
 def ingest_file(
@@ -184,16 +184,16 @@ def ingest_file(
 
         num_chunks = len(chunks)
         for i, chunk in enumerate(chunks):
-            logger.info(f"Ingesting chunk {i + 1} / {num_chunks} into memory")
+            logger.info(f"注入块 {i + 1} / {num_chunks} 到记忆中")
             memory_to_add = (
-                f"Filename: {filename}\n" f"Content part#{i + 1}/{num_chunks}: {chunk}"
+                f"文件名: {filename}\n" f"内容块#{i + 1}/{num_chunks}: {chunk}"
             )
 
             memory.add(memory_to_add)
 
-        logger.info(f"Done ingesting {num_chunks} chunks from {filename}.")
+        logger.info(f"注入完成 {num_chunks} 块 from {filename}.")
     except Exception as err:
-        logger.info(f"Error while ingesting file '{filename}': {err}")
+        logger.info(f"注入文件出现错误 '{filename}': {err}")
 
 
 @command("write_to_file", "Write to file", '"filename": "<filename>", "text": "<text>"')
@@ -216,9 +216,9 @@ def write_to_file(filename: str, text: str) -> str:
         with open(filename, "w", encoding="utf-8") as f:
             f.write(text)
         log_operation("write", filename, checksum)
-        return "File written to successfully."
+        return "文件写入成功."
     except Exception as err:
-        return f"Error: {err}"
+        return f"错误: {err}"
 
 
 @command(
@@ -246,9 +246,9 @@ def append_to_file(filename: str, text: str, should_log: bool = True) -> str:
                 checksum = text_checksum(f.read())
             log_operation("append", filename, checksum=checksum)
 
-        return "Text appended successfully."
+        return "文本追加成功."
     except Exception as err:
-        return f"Error: {err}"
+        return f"错误: {err}"
 
 
 @command("delete_file", "Delete file", '"filename": "<filename>"')
@@ -262,13 +262,13 @@ def delete_file(filename: str) -> str:
         str: A message indicating success or failure
     """
     if is_duplicate_operation("delete", filename):
-        return "Error: File has already been deleted."
+        return "错误: 文件已经删除."
     try:
         os.remove(filename)
         log_operation("delete", filename)
-        return "File deleted successfully."
+        return "文件删除成功."
     except Exception as err:
-        return f"Error: {err}"
+        return f"错误: {err}"
 
 
 @command("list_files", "List Files in Directory", '"directory": "<directory>"')
@@ -300,7 +300,7 @@ def list_files(directory: str) -> list[str]:
     "Download File",
     '"url": "<url>", "filename": "<filename>"',
     CFG.allow_downloads,
-    "Error: You do not have user authorization to download files locally.",
+    "错误: 你没有下载到本地的权限.",
 )
 def download_file(url, filename):
     """Downloads a file
@@ -336,8 +336,8 @@ def download_file(url, filename):
                         progress = f"{readable_file_size(downloaded_size)} / {readable_file_size(total_size)}"
                         spinner.update_message(f"{message} {progress}")
 
-            return f'Successfully downloaded and locally stored file: "{filename}"! (Size: {readable_file_size(downloaded_size)})'
+            return f'文件下载到本地成功，文件名: "{filename}"! (Size: {readable_file_size(downloaded_size)})'
     except requests.HTTPError as err:
-        return f"Got an HTTP Error whilst trying to download file: {err}"
+        return f"文件下载过程中遇到HTTP错误: {err}"
     except Exception as err:
-        return f"Error: {err}"
+        return f"错误: {err}"

@@ -302,8 +302,8 @@ def check_openai_api_key() -> None:
     if not cfg.openai_api_key:
         print(
             Fore.RED
-            + "Please set your OpenAI API key in .env or as an environment variable."
+            + "请在.env文件中配置你的OpenAI API Key."
             + Fore.RESET
         )
-        print("You can get your key from https://platform.openai.com/account/api-keys")
+        print("你可以从这里获取你的key https://platform.openai.com/account/api-keys")
         exit(1)

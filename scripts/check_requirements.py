@@ -22,11 +22,11 @@ def main():
             missing_packages.append(package_name)
 
     if missing_packages:
-        print("Missing packages:")
+        print("缺少安装包:")
         print(", ".join(missing_packages))
         sys.exit(1)
     else:
-        print("All packages are installed.")
+        print("一切准备就绪，等待起飞.")
 
 
 if __name__ == "__main__":
