@@ -38,6 +38,11 @@ def get_newly_trimmed_messages(
         msg for msg in new_messages if msg not in current_context
     ]
 
+    print("current_context:" + str(current_context))
+    print("full_message_history:" + str(full_message_history))
+    print("new_messages:" + str(new_messages))
+    print("new_messages_not_in_context:" + str(new_messages_not_in_context))
+
     # Find the index of the last message processed
     new_index = last_memory_index
     if new_messages_not_in_context:
@@ -67,7 +72,9 @@ def update_running_summary(
         # Returns: "This reminds you of these events from your past: \nI entered the kitchen and found a scrawled note saying 7."
     """
     # Create a copy of the new_events list to prevent modifying the original list
+    print("old_events: ", str(new_events))
     new_events = copy.deepcopy(new_events)
+    print("new_events: ", str(new_events))
 
     # Replace "assistant" with "you". This produces much better first person past tense results.
     for event in new_events:
