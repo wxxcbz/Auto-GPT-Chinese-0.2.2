@@ -42,7 +42,7 @@ def google_search(query: str, num_results: int = 8) -> str:
     "Google Search",
     '"query": "<query>"',
     bool(CFG.google_api_key),
-    "Configure google_api_key.",
+    "配置 google_api_key.",
 )
 def google_official_search(query: str, num_results: int = 8) -> str | list[str]:
     """Return the results of a Google search using the official Google API

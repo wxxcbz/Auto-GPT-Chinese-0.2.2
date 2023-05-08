@@ -39,7 +39,7 @@ def test_generate_context_empty_inputs(mocker):
             {"role": "system", "content": ""},
             {
                 "role": "system",
-                "content": f"The current time and date is {time.strftime('%c')}",
+                "content": f"当前的日期和时间是 {time.strftime('%c')}",
             },
         ],
     )

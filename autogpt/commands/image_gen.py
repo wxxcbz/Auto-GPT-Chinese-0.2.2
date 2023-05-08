@@ -36,7 +36,7 @@ def generate_image(prompt: str, size: int = 256) -> str:
     # SD WebUI
     elif CFG.image_provider == "sdwebui":
         return generate_image_with_sd_webui(prompt, filename, size)
-    return "No Image Provider Set"
+    return "没有配置图片功能"
 
 
 def generate_image_with_hf(prompt: str, filename: str) -> str:
@@ -54,7 +54,7 @@ def generate_image_with_hf(prompt: str, filename: str) -> str:
     )
     if CFG.huggingface_api_token is None:
         raise ValueError(
-            "You need to set your Hugging Face API token in the config file."
+            "你需要再配置文件中配置Hugging Face API token."
         )
     headers = {
         "Authorization": f"Bearer {CFG.huggingface_api_token}",
@@ -70,7 +70,7 @@ def generate_image_with_hf(prompt: str, filename: str) -> str:
     )
 
     image = Image.open(io.BytesIO(response.content))
-    logger.info(f"Image Generated for prompt:{prompt}")
+    logger.info(f"图片生成基于下面prompt:{prompt}")
 
     image.save(filename)
 
@@ -105,7 +105,7 @@ def generate_image_with_dalle(prompt: str, filename: str, size: int) -> str:
         api_key=CFG.openai_api_key,
     )
 
-    logger.info(f"Image Generated for prompt:{prompt}")
+    logger.info(f"图片生成基于下面prompt:{prompt}")
 
     image_data = b64decode(response["data"][0]["b64_json"])
 
@@ -154,7 +154,7 @@ def generate_image_with_sd_webui(
         },
     )
 
-    logger.info(f"Image Generated for prompt:{prompt}")
+    logger.info(f"图片生成基于下面prompt:{prompt}")
 
     # Save the image to disk
     response = response.json()

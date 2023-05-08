@@ -175,10 +175,10 @@ def ingest_file(
     :param overlap: The number of overlapping characters between chunks, default is 200
     """
     try:
-        logger.info(f"Working with file {filename}")
+        logger.info(f"操作文件中 {filename}")
         content = read_file(filename)
         content_length = len(content)
-        logger.info(f"File length: {content_length} characters")
+        logger.info(f"文件长度: {content_length} 字符")
 
         chunks = list(split_file(content, max_length=max_length, overlap=overlap))
 
@@ -209,7 +209,7 @@ def write_to_file(filename: str, text: str) -> str:
     """
     checksum = text_checksum(text)
     if is_duplicate_operation("write", filename, checksum):
-        return "Error: File has already been updated."
+        return "错误: 文件已经更新."
     try:
         directory = os.path.dirname(filename)
         os.makedirs(directory, exist_ok=True)

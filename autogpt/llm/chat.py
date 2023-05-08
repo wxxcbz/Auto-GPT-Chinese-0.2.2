@@ -32,7 +32,7 @@ def generate_context(prompt, relevant_memory, full_message_history, model):
     current_context = [
         create_chat_message("system", prompt),
         create_chat_message(
-            "system", f"The current time and date is {time.strftime('%c')}"
+            "system", f"当前的日期和时间是 {time.strftime('%c')}"
         ),
         # create_chat_message(
         #     "system",
@@ -79,7 +79,7 @@ def chat_with_ai(
             """
             model = cfg.fast_llm_model  # TODO: Change model from hardcode to argument
             # Reserve 1000 tokens for the response
-            logger.debug(f"Token limit: {token_limit}")
+            logger.debug(f"Token限额: {token_limit}")
             send_token_limit = token_limit - 1000
 
             # if len(full_message_history) == 0:
@@ -94,7 +94,7 @@ def chat_with_ai(
             #         shuffle(relevant_memories)
             #     relevant_memory = str(relevant_memories)
             relevant_memory = ""
-            logger.debug(f"Memory Stats: {permanent_memory.get_stats()}")
+            logger.debug(f"记忆状态: {permanent_memory.get_stats()}")
 
             (
                 next_message_to_add_index,
@@ -178,13 +178,13 @@ def chat_with_ai(
                 if remaining_budget < 0:
                     remaining_budget = 0
                 system_message = (
-                    f"Your remaining API budget is ${remaining_budget:.3f}"
+                    f"你的剩余API预算为 ${remaining_budget:.3f}"
                     + (
-                        " BUDGET EXCEEDED! SHUT DOWN!\n\n"
+                        " 已超预算! 关闭!\n\n"
                         if remaining_budget == 0
-                        else " Budget very nearly exceeded! Shut down gracefully!\n\n"
+                        else " 预算非常接近限额! 优雅关闭中!\n\n"
                         if remaining_budget < 0.005
-                        else " Budget nearly exceeded. Finish up.\n\n"
+                        else " 预算接近限额. 完成中.\n\n"
                         if remaining_budget < 0.01
                         else "\n\n"
                     )
@@ -220,17 +220,17 @@ def chat_with_ai(
             #  https://www.github.com/Torantulino/Auto-GPT"
 
             # Debug print the current context
-            logger.debug(f"Token limit: {token_limit}")
-            logger.debug(f"Send Token Count: {current_tokens_used}")
-            logger.debug(f"Tokens remaining for response: {tokens_remaining}")
-            logger.debug("------------ CONTEXT SENT TO AI ---------------")
+            logger.debug(f"Token限额: {token_limit}")
+            logger.debug(f"发送Token数量: {current_tokens_used}")
+            logger.debug(f"回复剩余Token: {tokens_remaining}")
+            logger.debug("------------ 内容发送至AI ---------------")
             for message in current_context:
                 # Skip printing the prompt
                 if message["role"] == "system" and message["content"] == prompt:
                     continue
                 logger.debug(f"{message['role'].capitalize()}: {message['content']}")
                 logger.debug("")
-            logger.debug("----------- END OF CONTEXT ----------------")
+            logger.debug("----------- 内容结束 ----------------")
             agent.log_cycle_handler.log_cycle(
                 agent.config.ai_name,
                 agent.created_at,
@@ -256,5 +256,5 @@ def chat_with_ai(
             return assistant_reply
         except RateLimitError:
             # TODO: When we switch to langchain, this is built in
-            logger.warn("Error: ", "API Rate Limit Reached. Waiting 10 seconds...")
+            logger.warn("错误: ", "API达到请求限额. 等待10秒...")
             time.sleep(10)

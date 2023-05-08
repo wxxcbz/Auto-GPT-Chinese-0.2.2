@@ -13,7 +13,7 @@ CFG = Config()
     "Clone Repository",
     '"url": "<repository_url>", "clone_path": "<clone_path>"',
     CFG.github_username and CFG.github_api_key,
-    "Configure github_username and github_api_key.",
+    "配置 github_username 和 github_api_key.",
 )
 @validate_url
 def clone_repository(url: str, clone_path: str) -> str:
@@ -32,4 +32,4 @@ def clone_repository(url: str, clone_path: str) -> str:
         Repo.clone_from(url=auth_repo_url, to_path=clone_path)
         return f"""Cloned {url} to {clone_path}"""
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"错误: {str(e)}"

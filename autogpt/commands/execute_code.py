@@ -23,13 +23,13 @@ def execute_python_file(filename: str) -> str:
     Returns:
         str: The output of the file
     """
-    logger.info(f"Executing file '{filename}'")
+    logger.info(f"执行文件中 '{filename}'")
 
     if not filename.endswith(".py"):
-        return "Error: Invalid file type. Only .py files are allowed."
+        return "错误: 无效的文件类型. 只允许 .py文件."
 
     if not os.path.isfile(filename):
-        return f"Error: File '{filename}' does not exist."
+        return f"错误: 文件 '{filename}' 不存在."
 
     if we_are_running_in_a_docker_container():
         result = subprocess.run(
@@ -38,7 +38,7 @@ def execute_python_file(filename: str) -> str:
         if result.returncode == 0:
             return result.stdout
         else:
-            return f"Error: {result.stderr}"
+            return f"错误: {result.stderr}"
 
     try:
         client = docker.from_env()
@@ -89,12 +89,12 @@ def execute_python_file(filename: str) -> str:
 
     except docker.errors.DockerException as e:
         logger.warn(
-            "Could not run the script in a container. If you haven't already, please install Docker https://docs.docker.com/get-docker/"
+            "在容器中无法执行脚本. 如果你还没有安装，请安装Docker https://docs.docker.com/get-docker/"
         )
-        return f"Error: {str(e)}"
+        return f"错误: {str(e)}"
 
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"错误: {str(e)}"
 
 
 @command(
@@ -122,7 +122,7 @@ def execute_shell(command_line: str) -> str:
         os.chdir(CFG.workspace_path)
 
     logger.info(
-        f"Executing command '{command_line}' in working directory '{os.getcwd()}'"
+        f"执行命令  '{command_line}' in working directory '{os.getcwd()}'"
     )
 
     result = subprocess.run(command_line, capture_output=True, shell=True)
