@@ -182,7 +182,7 @@ class Agent:
                             Fore.GREEN,
                             "",
                         )
-                        thoughts = assistant_reply_json.get("thoughts", {})
+                        thoughts = assistant_reply_json.get("思考", {})
                         self_feedback_resp = self.get_self_feedback(
                             thoughts, cfg.fast_llm_model
                         )
@@ -192,7 +192,7 @@ class Agent:
                             "",
                         )
                         user_input = self_feedback_resp
-                        command_name = "self_feedback"
+                        command_name = "自我反馈"
                         break
                     elif console_input.lower().strip() == "":
                         logger.warn("错误的输入格式.")
@@ -250,8 +250,8 @@ class Agent:
                 )
             elif command_name == "human_feedback":
                 result = f"Human feedback: {user_input}"
-            elif command_name == "self_feedback":
-                result = f"Self feedback: {user_input}"
+            elif command_name == "自我反馈":
+                result = f"自我反馈: {user_input}"
             else:
                 for plugin in cfg.plugins:
                     if not plugin.can_handle_pre_command():
@@ -288,13 +288,13 @@ class Agent:
             # history
             if result is not None:
                 self.full_message_history.append(create_chat_message("system", result))
-                logger.typewriter_log("系统: ", Fore.YELLOW, result)
+                logger.typewriter_log("system: ", Fore.YELLOW, result)
             else:
                 self.full_message_history.append(
                     create_chat_message("system", "Unable to execute command")
                 )
                 logger.typewriter_log(
-                    "系统: ", Fore.YELLOW, "无法执行命令"
+                    "system: ", Fore.YELLOW, "无法执行命令"
                 )
 
     def _resolve_pathlike_command_args(self, command_args):
@@ -323,9 +323,9 @@ class Agent:
         ai_role = self.config.ai_role
 
         feedback_prompt = f"下面是来自我的消息，我是一个AI助手, 假设角色为 {ai_role}. 作为AI助手，我会在保持了解自身局限性的前提下，请评估我的思考过程、推理和计划，并提供一个简洁的段落概述潜在的改进。请考虑添加或删除与我的角色不符的想法，并解释原因，根据思考的重要性进行优先排序，或简单地完善我的整体思考过程。."
-        reasoning = thoughts.get("reasoning", "")
-        plan = thoughts.get("plan", "")
-        thought = thoughts.get("thoughts", "")
+        reasoning = thoughts.get("推理", "")
+        plan = thoughts.get("计划", "")
+        thought = thoughts.get("思考", "")
         feedback_thoughts = thought + reasoning + plan
         return create_chat_completion(
             [{"role": "user", "content": feedback_prompt + feedback_thoughts}],

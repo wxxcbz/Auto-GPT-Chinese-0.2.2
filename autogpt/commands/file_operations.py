@@ -156,7 +156,7 @@ def read_file(filename: str) -> str:
     try:
         charset_match = charset_normalizer.from_path(filename).best()
         encoding = charset_match.encoding
-        logger.debug(f"读取文件 '{filename}' with encoding '{encoding}'")
+        logger.debug(f"Read file '{filename}' with encoding '{encoding}'")
         return str(charset_match)
     except Exception as err:
         return f"错误: {err}"

@@ -169,7 +169,7 @@ def run_auto_gpt(
     logger.typewriter_log("使用浏览器:", Fore.GREEN, cfg.selenium_web_browser)
     system_prompt = ai_config.construct_full_prompt()
     if cfg.debug_mode:
-        logger.typewriter_log("命令:", Fore.GREEN, system_prompt)
+        logger.typewriter_log("Prompt:", Fore.GREEN, system_prompt)
 
     agent = Agent(
         ai_name=ai_name,
