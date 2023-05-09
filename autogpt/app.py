@@ -49,17 +49,17 @@ def get_command(response_json: Dict):
     """
     try:
         if "command" not in response_json:
-            return "错误:", "缺少 'command' object in JSON"
+            return "Error:", "缺少 'command' object in JSON"
 
         if not isinstance(response_json, dict):
-            return "错误:", f"'response_json' object is not dictionary {response_json}"
+            return "Error:", f"'response_json' object is not dictionary {response_json}"
 
         command = response_json["command"]
         if not isinstance(command, dict):
-            return "错误:", "'command' object is not a dictionary"
+            return "Error:", "'command' object is not a dictionary"
 
         if "name" not in command:
-            return "错误:", "缺少 'name' field in 'command' object"
+            return "Error:", "缺少 'name' field in 'command' object"
 
         command_name = command["name"]
 
@@ -68,10 +68,10 @@ def get_command(response_json: Dict):
 
         return command_name, arguments
     except json.decoder.JSONDecodeError:
-        return "错误:", "无效的JSON"
+        return "Error:", "Invalid JSON"
     # All other errors, return "Error: + error message"
     except Exception as e:
-        return "错误:", str(e)
+        return "Error:", str(e)
 
 
 def map_command_synonyms(command_name: str):
@@ -203,7 +203,7 @@ def start_agent(name: str, task: str, prompt: str, model=CFG.fast_llm_model) -> 
     # Assign task (prompt), get response
     agent_response = AGENT_MANAGER.message_agent(key, prompt)
 
-    return f"助手 {name} 生成key {key}. 首次反馈: {agent_response}"
+    return f"Agent {name} 生成key {key}. 首次反馈: {agent_response}"
 
 
 @command("message_agent", "Message GPT Agent", '"key": "<key>", "message": "<message>"')

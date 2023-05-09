@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from colorama import Fore, Style
 
 from autogpt.app import execute_command, get_command
@@ -8,12 +6,6 @@ from autogpt.json_utils.json_fix_llm import fix_json_using_multiple_techniques
 from autogpt.json_utils.utilities import LLM_DEFAULT_RESPONSE_FORMAT, validate_json
 from autogpt.llm import chat_with_ai, create_chat_completion, create_chat_message
 from autogpt.llm.token_counter import count_string_tokens
-from autogpt.log_cycle.log_cycle import (
-    FULL_MESSAGE_HISTORY_FILE_NAME,
-    NEXT_ACTION_FILE_NAME,
-    USER_INPUT_FILE_NAME,
-    LogCycleHandler,
-)
 from autogpt.logs import logger, print_assistant_thoughts
 from autogpt.speech import say_text
 from autogpt.spinner import Spinner
@@ -66,7 +58,7 @@ class Agent:
         self.ai_name = ai_name
         self.memory = memory
         self.summary_memory = (
-            "生成完毕."  # Initial memory necessary to avoid hallucination
+            "我被生成完毕."  # Initial memory necessary to avoid hilucination
         )
         self.last_memory_index = 0
         self.full_message_history = full_message_history
@@ -76,33 +68,22 @@ class Agent:
         self.system_prompt = system_prompt
         self.triggering_prompt = triggering_prompt
         self.workspace = Workspace(workspace_directory, cfg.restrict_to_workspace)
-        self.created_at = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.cycle_count = 0
-        self.log_cycle_handler = LogCycleHandler()
 
     def start_interaction_loop(self):
         # Interaction Loop
         cfg = Config()
-        self.cycle_count = 0
+        loop_count = 0
         command_name = None
         arguments = None
         user_input = ""
 
         while True:
             # Discontinue if continuous limit is reached
-            self.cycle_count += 1
-            self.log_cycle_handler.log_count_within_cycle = 0
-            self.log_cycle_handler.log_cycle(
-                self.config.ai_name,
-                self.created_at,
-                self.cycle_count,
-                self.full_message_history,
-                FULL_MESSAGE_HISTORY_FILE_NAME,
-            )
+            loop_count += 1
             if (
                 cfg.continuous_mode
                 and cfg.continuous_limit > 0
-                and self.cycle_count > cfg.continuous_limit
+                and loop_count > cfg.continuous_limit
             ):
                 logger.typewriter_log(
                     "持续模式次数已到达: ", Fore.YELLOW, f"{cfg.continuous_limit}"
@@ -123,7 +104,7 @@ class Agent:
             for plugin in cfg.plugins:
                 if not plugin.can_handle_post_planning():
                     continue
-                assistant_reply_json = plugin.post_planning(assistant_reply_json)
+                assistant_reply_json = plugin.post_planning(self, assistant_reply_json)
 
             # Print Assistant thoughts
             if assistant_reply_json != {}:
@@ -140,14 +121,7 @@ class Agent:
                     arguments = self._resolve_pathlike_command_args(arguments)
 
                 except Exception as e:
-                    logger.error("错误: \n", str(e))
-            self.log_cycle_handler.log_cycle(
-                self.config.ai_name,
-                self.created_at,
-                self.cycle_count,
-                assistant_reply_json,
-                NEXT_ACTION_FILE_NAME,
-            )
+                    logger.error("Error: \n", str(e))
 
             if not cfg.continuous_mode and self.next_action_count == 0:
                 # ### GET USER AUTHORIZATION TO EXECUTE COMMAND ###
@@ -155,14 +129,14 @@ class Agent:
                 # to exit
                 self.user_input = ""
                 logger.typewriter_log(
-                    "下一步: ",
+                    "NEXT ACTION: ",
                     Fore.CYAN,
-                    f"命令 = {Fore.CYAN}{command_name}{Style.RESET_ALL}  "
-                    f"参数 = {Fore.CYAN}{arguments}{Style.RESET_ALL}",
+                    f"COMMAND = {Fore.CYAN}{command_name}{Style.RESET_ALL}  "
+                    f"ARGUMENTS = {Fore.CYAN}{arguments}{Style.RESET_ALL}",
                 )
 
                 logger.info(
-                    "输入 'y' 授权执行命令, 'y -N' 执行N步持续模式, 's' 执行自我反馈命令 或 "
+                    "输入 'y' 授权执行命令, 'y -N' 执行N步持续模式, 's' 执行自我反馈命令 或"
                     "'n' 退出程序, 或直接输入反馈 "
                     f"{self.ai_name}..."
                 )
@@ -171,18 +145,18 @@ class Agent:
                         console_input = clean_input("等待你的反馈中...")
                     else:
                         console_input = clean_input(
-                            Fore.MAGENTA + "Input:" + Style.RESET_ALL
+                            Fore.MAGENTA + "输入:" + Style.RESET_ALL
                         )
                     if console_input.lower().strip() == cfg.authorise_key:
                         user_input = "生成下一个命令的JSON"
                         break
                     elif console_input.lower().strip() == "s":
                         logger.typewriter_log(
-                            "-=-=-=-=-=-=-= 思考, 推理, 计划于批判将会被AI助手校验 -=-=-=-=-=-=-=",
+                            "-=-=-=-=-=-=-= 思考, 推理, 计划于反思将会被AI助手校验 -=-=-=-=-=-=-=",
                             Fore.GREEN,
                             "",
                         )
-                        thoughts = assistant_reply_json.get("思考", {})
+                        thoughts = assistant_reply_json.get("thoughts", {})
                         self_feedback_resp = self.get_self_feedback(
                             thoughts, cfg.fast_llm_model
                         )
@@ -191,8 +165,10 @@ class Agent:
                             Fore.YELLOW,
                             "",
                         )
-                        user_input = self_feedback_resp
-                        command_name = "自我反馈"
+                        if self_feedback_resp[0].lower().strip() == cfg.authorise_key:
+                            user_input = "生成下一个命令的JSON"
+                        else:
+                            user_input = self_feedback_resp
                         break
                     elif console_input.lower().strip() == "":
                         logger.warn("错误的输入格式.")
@@ -216,13 +192,6 @@ class Agent:
                     else:
                         user_input = console_input
                         command_name = "human_feedback"
-                        self.log_cycle_handler.log_cycle(
-                            self.config.ai_name,
-                            self.created_at,
-                            self.cycle_count,
-                            user_input,
-                            USER_INPUT_FILE_NAME,
-                        )
                         break
 
                 if user_input == "生成下一个命令的JSON":
@@ -232,15 +201,15 @@ class Agent:
                         "",
                     )
                 elif user_input == "EXIT":
-                    logger.info("退出中...")
+                    logger.info("Exiting...")
                     break
             else:
                 # Print command
                 logger.typewriter_log(
-                    "下一步: ",
+                    "NEXT ACTION: ",
                     Fore.CYAN,
-                    f"命令 = {Fore.CYAN}{command_name}{Style.RESET_ALL}"
-                    f"  参数 = {Fore.CYAN}{arguments}{Style.RESET_ALL}",
+                    f"COMMAND = {Fore.CYAN}{command_name}{Style.RESET_ALL}"
+                    f"  ARGUMENTS = {Fore.CYAN}{arguments}{Style.RESET_ALL}",
                 )
 
             # Execute command
@@ -250,8 +219,6 @@ class Agent:
                 )
             elif command_name == "human_feedback":
                 result = f"Human feedback: {user_input}"
-            elif command_name == "自我反馈":
-                result = f"自我反馈: {user_input}"
             else:
                 for plugin in cfg.plugins:
                     if not plugin.can_handle_pre_command():
@@ -288,13 +255,13 @@ class Agent:
             # history
             if result is not None:
                 self.full_message_history.append(create_chat_message("system", result))
-                logger.typewriter_log("system: ", Fore.YELLOW, result)
+                logger.typewriter_log("SYSTEM: ", Fore.YELLOW, result)
             else:
                 self.full_message_history.append(
-                    create_chat_message("system", "Unable to execute command")
+                    create_chat_message("system", "无法执行命令")
                 )
                 logger.typewriter_log(
-                    "system: ", Fore.YELLOW, "无法执行命令"
+                    "SYSTEM: ", Fore.YELLOW, "无法执行命令"
                 )
 
     def _resolve_pathlike_command_args(self, command_args):
@@ -322,11 +289,12 @@ class Agent:
         """
         ai_role = self.config.ai_role
 
-        feedback_prompt = f"下面是来自我的消息，我是一个AI助手, 假设角色为 {ai_role}. 作为AI助手，我会在保持了解自身局限性的前提下，请评估我的思考过程、推理和计划，并提供一个简洁的段落概述潜在的改进。请考虑添加或删除与我的角色不符的想法，并解释原因，根据思考的重要性进行优先排序，或简单地完善我的整体思考过程。."
+        feedback_prompt = f"下面是来自我的消息，我是一个AI助手，角色为： {ai_role}. 请评估提供的思考，推理，计划与反思. 如果这些内容可以准确的完成该角色的任务，请回复字母'Y'后面加上一个空格，然后请解释为什么是最优方案. 日过这些信息无法实现该角色的目标, 请提供一句或多句解释一下具体的问题与建议的解决方案."
         reasoning = thoughts.get("推理", "")
         plan = thoughts.get("计划", "")
         thought = thoughts.get("思考", "")
-        feedback_thoughts = thought + reasoning + plan
+        criticism = thoughts.get("反思", "")
+        feedback_thoughts = thought + reasoning + plan + criticism
         return create_chat_completion(
             [{"role": "user", "content": feedback_prompt + feedback_thoughts}],
             llm_model,
