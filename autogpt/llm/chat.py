@@ -85,7 +85,7 @@ def chat_with_ai(
             """
             model = cfg.fast_llm_model  # TODO: Change model from hardcode to argument
             # Reserve 1000 tokens for the response
-            logger.debug(f"Token limit: {token_limit}")
+            logger.debug(f"Token限额: {token_limit}")
             send_token_limit = token_limit - 1000
 
             # if len(full_message_history) == 0:
@@ -178,13 +178,13 @@ def chat_with_ai(
                 if remaining_budget < 0:
                     remaining_budget = 0
                 system_message = (
-                    f"Your remaining API budget is ${remaining_budget:.3f}"
+                    f"你的剩余API预算为 ${remaining_budget:.3f}"
                     + (
-                        " BUDGET EXCEEDED! SHUT DOWN!\n\n"
+                        " 已超预算! 关闭!\n\n"
                         if remaining_budget == 0
-                        else " Budget very nearly exceeded! Shut down gracefully!\n\n"
+                        else " 预算非常接近限额! 优雅关闭中!\n\n"
                         if remaining_budget < 0.005
-                        else " Budget nearly exceeded. Finish up.\n\n"
+                        else " 预算接近限额. 完成中.\n\n"
                         if remaining_budget < 0.01
                         else "\n\n"
                     )
@@ -220,17 +220,17 @@ def chat_with_ai(
             #  https://www.github.com/Torantulino/Auto-GPT"
 
             # Debug print the current context
-            logger.debug(f"Token limit: {token_limit}")
-            logger.debug(f"Send Token Count: {current_tokens_used}")
-            logger.debug(f"Tokens remaining for response: {tokens_remaining}")
-            logger.debug("------------ CONTEXT SENT TO AI ---------------")
+            logger.debug(f"Token限额: {token_limit}")
+            logger.debug(f"发送Token数量: {current_tokens_used}")
+            logger.debug(f"回复剩余Token: {tokens_remaining}")
+            logger.debug("------------ 内容发送至AI ---------------")
             for message in current_context:
                 # Skip printing the prompt
                 if message["role"] == "system" and message["content"] == prompt:
                     continue
                 logger.debug(f"{message['role'].capitalize()}: {message['content']}")
                 logger.debug("")
-            logger.debug("----------- END OF CONTEXT ----------------")
+            logger.debug("----------- 内容结束 ----------------")
 
             # TODO: use a model defined elsewhere, so that model can contain
             # temperature and other settings we care about

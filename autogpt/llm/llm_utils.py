@@ -172,12 +172,12 @@ def create_chat_completion(
             break
         except RateLimitError:
             logger.debug(
-                f"{Fore.RED}Error: ", f"Reached rate limit, passing...{Fore.RESET}"
+                f"{Fore.RED}Error: ", f"到达请求限额, passing...{Fore.RESET}"
             )
             if not warned_user:
                 logger.double_check(
-                    f"Please double check that you have setup a {Fore.CYAN + Style.BRIGHT}PAID{Style.RESET_ALL} OpenAI API Account. "
-                    + f"You can read more here: {Fore.CYAN}https://docs.agpt.co/setup/#getting-an-api-key{Fore.RESET}"
+                    f"请再次检查你已经配置好了一个 {Fore.CYAN + Style.BRIGHT}付费的{Style.RESET_ALL} OpenAI API账户. "
+                    + f"你可以从这里获取更多信息: {Fore.CYAN}https://docs.agpt.co/setup/#getting-an-api-key{Fore.RESET}"
                 )
                 warned_user = True
         except (APIError, Timeout) as e:
@@ -187,19 +187,19 @@ def create_chat_completion(
                 raise
         logger.debug(
             f"{Fore.RED}Error: ",
-            f"API Bad gateway. Waiting {backoff} seconds...{Fore.RESET}",
+            f"API Bad gateway. 等待 {backoff} 秒...{Fore.RESET}",
         )
         time.sleep(backoff)
     if response is None:
         logger.typewriter_log(
-            "FAILED TO GET RESPONSE FROM OPENAI",
+            "从OPENAI获取信息失败",
             Fore.RED,
-            "Auto-GPT has failed to get a response from OpenAI's services. "
-            + f"Try running Auto-GPT again, and if the problem the persists try running it with `{Fore.CYAN}--debug{Fore.RESET}`.",
+            "Auto-GPT从OpenAI服务中获取请求失败. "
+            + f"尝试重新启动Auto-GPT, 如果这个问题持续出现请增加后缀 `{Fore.CYAN}--debug{Fore.RESET}`.",
         )
         logger.double_check()
         if cfg.debug_mode:
-            raise RuntimeError(f"Failed to get response after {num_retries} retries")
+            raise RuntimeError(f"请求 {num_retries} 次后失败")
         else:
             quit(1)
     resp = response.choices[0].message["content"]
@@ -214,7 +214,7 @@ def batched(iterable, n):
     """Batch data into tuples of length n. The last batch may be shorter."""
     # batched('ABCDEFG', 3) --> ABC DEF G
     if n < 1:
-        raise ValueError("n must be at least one")
+        raise ValueError("n 必须为数字")
     it = iter(iterable)
     while batch := tuple(islice(it, n)):
         yield batch

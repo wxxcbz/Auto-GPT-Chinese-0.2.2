@@ -129,10 +129,10 @@ class Agent:
                 # to exit
                 self.user_input = ""
                 logger.typewriter_log(
-                    "NEXT ACTION: ",
+                    "下一步: ",
                     Fore.CYAN,
-                    f"COMMAND = {Fore.CYAN}{command_name}{Style.RESET_ALL}  "
-                    f"ARGUMENTS = {Fore.CYAN}{arguments}{Style.RESET_ALL}",
+                    f"命令 = {Fore.CYAN}{command_name}{Style.RESET_ALL}  "
+                    f"参数 = {Fore.CYAN}{arguments}{Style.RESET_ALL}",
                 )
 
                 logger.info(
@@ -200,16 +200,16 @@ class Agent:
                         Fore.MAGENTA,
                         "",
                     )
-                elif user_input == "EXIT":
+                elif user_input == "EXIT" or "exit" or "退出":
                     logger.info("Exiting...")
                     break
             else:
                 # Print command
                 logger.typewriter_log(
-                    "NEXT ACTION: ",
+                    "下一步: ",
                     Fore.CYAN,
-                    f"COMMAND = {Fore.CYAN}{command_name}{Style.RESET_ALL}"
-                    f"  ARGUMENTS = {Fore.CYAN}{arguments}{Style.RESET_ALL}",
+                    f"命令 = {Fore.CYAN}{command_name}{Style.RESET_ALL}"
+                    f"  参数 = {Fore.CYAN}{arguments}{Style.RESET_ALL}",
                 )
 
             # Execute command
@@ -217,8 +217,8 @@ class Agent:
                 result = (
                     f"Command {command_name} threw the following error: {arguments}"
                 )
-            elif command_name == "human_feedback":
-                result = f"Human feedback: {user_input}"
+            elif command_name == "人类反馈":
+                result = f"人类反馈: {user_input}"
             else:
                 for plugin in cfg.plugins:
                     if not plugin.can_handle_pre_command():
@@ -277,8 +277,8 @@ class Agent:
 
     def get_self_feedback(self, thoughts: dict, llm_model: str) -> str:
         """Generates a feedback response based on the provided thoughts dictionary.
-        This method takes in a dictionary of thoughts containing keys such as 'reasoning',
-        'plan', 'thoughts', and 'criticism'. It combines these elements into a single
+        This method takes in a dictionary of thoughts containing keys such as "reasoning",
+        "plan", "thoughts", and "criticism". It combines these elements into a single
         feedback message and uses the create_chat_completion() function to generate a
         response based on the input message.
         Args:
