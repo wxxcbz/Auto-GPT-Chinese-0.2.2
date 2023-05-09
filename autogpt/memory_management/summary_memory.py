@@ -1,9 +1,9 @@
 import copy
 import json
 from typing import Dict, List, Tuple
-
 from autogpt.config import Config
 from autogpt.llm.llm_utils import create_chat_completion
+from autogpt.logs import logger
 
 cfg = Config()
 
@@ -28,7 +28,7 @@ def get_newly_trimmed_messages(
     """
     # Select messages in full_message_history with an index higher than last_memory_index
     new_messages = [
-        msg for i, msg in enumerate(full_message_history) if i > last_memory_index
+        copy.deepcopy(msg) for i, msg in enumerate(full_message_history) if i > last_memory_index
     ]
 
     # Remove messages that are already present in current_context
@@ -71,9 +71,13 @@ def update_running_summary(
     for event in new_events:
         if event["role"].lower() == "assistant":
             event["role"] = "you"
+            try:
+                content_dict = json.loads(event["content"])
+            except json.JSONDecodeError as e:
+                print(f"Error decoding JSON data: {e}")
+                # You can either provide a fallback value or raise a more specific exception here
+                content_dict = {}
 
-            # Remove "thoughts" dictionary from "content"
-            content_dict = json.loads(event["content"])
             if "thoughts" in content_dict:
                 del content_dict["thoughts"]
             event["content"] = json.dumps(content_dict)
